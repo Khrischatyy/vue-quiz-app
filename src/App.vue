@@ -1,35 +1,28 @@
 <template>
   <div class="ctr">
-    <div class="questions-ctr">
-      <div class="progress">
-        <div class="bar"></div>
-        <div class="status">1 out of 3 questions answered</div>
-      </div>
-      <div class="single-question">
-        <div class="question">Sample Question 1</div>
-        <div class="answers">
-          <div class="answer">Sample Answer 1</div>
-          <div class="answer">Sample Answer 2</div>
-          <div class="answer">Sample Answer 3</div>
-          <div class="answer">Sample Answer 4</div>
-        </div>
-      </div>
-    </div>
-    <div class="result">
-      <div class="title">You got sample result 1!</div>
-      <div class="desc">
-        Enter a short description here about the result.
-      </div>
-    </div>
-    <button type="button" class="reset-btn">Reset</button>
+  <Questions
+      @increment-answered-question="incrementAnsweredQuestion"
+      v-if="questionsAnswered < questions.length"
+      :question-answered="questionsAnswered"
+      :questions="questions"></Questions>
+  <Result v-else
+          :total-correct="totalCorrect"
+          :results="results"></Result>
+    <button type="button" class="reset-btn" @click="resetAnsweredQuestion">Reset</button>
   </div>
 </template>
 <script>
 
+import Questions from "./components/Questions.vue";
+import Result from "./components/Result.vue";
+
 export default {
   name: "App",
+  components: {Questions, Result},
   data() {
     return {
+      questionsAnswered: 0,
+      totalCorrect: 0,
       questions: [
         {
           q: 'What is 2 + 2?',
@@ -106,6 +99,18 @@ export default {
         }
       ]
     }
-  }
+  },
+
+  methods: {
+    resetAnsweredQuestion() {
+      this.questionsAnswered = 0;
+      this.totalCorrect = 0;
+    },
+    incrementAnsweredQuestion(isCorrect) {
+      this.totalCorrect = isCorrect ? this.totalCorrect + 1 : this.totalCorrect;
+
+      this.questionsAnswered++
+    }
+  },
 }
 </script>
